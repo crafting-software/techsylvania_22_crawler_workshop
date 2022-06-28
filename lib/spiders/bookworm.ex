@@ -4,13 +4,13 @@ defmodule Spidey.BookWorm do
   def scrape() do
     page_urls()
     |> scrape_pages()
-    |> Enum.map(&scrape_book/1)
+    |> scrape_books()
   end
 
   def scrape_pages(page_urls) when is_list(page_urls) do
     page_urls
-    |> Enum.map(&scrape_page/1)
-    |> Enum.concat()
+    |> Enum.map(&scrape_page/1) # [["p1u1", "p1u2"], ["p2u1", "p2u2"]]
+    |> Enum.concat() # ["p1u1", "p1u2", "p2u1", "p2u2"]
     |> Enum.map(&URI.merge("https://books.toscrape.com/catalogue/category/books_1/", &1))
     |> tap(fn urls -> Logger.info "\n\nTotal book urls: #{length(urls)}\n\n" end)
   end
@@ -35,7 +35,19 @@ defmodule Spidey.BookWorm do
     end
   end
 
+  defp scrape_books(book_urls) do
+    book_urls
+    |> Flow.from_enumerable(max_demand: 1)
+    |> Flow.map(&scrape_book/1)
+    |> Flow.partition()
+    |> Flow.reduce(fn -> [] end, fn upc, acc ->
+      [upc | acc]
+    end)
+    |> Enum.to_list()
+  end
+
   defp scrape_book(book_url) do
+    Logger.info "#{inspect(self())}\tScraping book: #{book_url}"
     with {:http, {:ok, %HTTPoison.Response{status_code: 200, body: body}}} <- {:http, HTTPoison.get(book_url)},
          {:parse, {:ok, parsed_document}} <- {:parse, Floki.parse_document(body)} do
           parsed_document
@@ -51,7 +63,7 @@ defmodule Spidey.BookWorm do
     end
   end
 
-  defp page_urls(pages \\ 1) do
+  def page_urls(pages \\ 50) do
     for page_number <- 1..pages, do:
       "https://books.toscrape.com/catalogue/category/books_1/page-#{page_number}.html"
   end

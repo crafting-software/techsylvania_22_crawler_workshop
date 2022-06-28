@@ -1,4 +1,4 @@
-defmodule Spidey.Measure do
+defmodule Utils do
 
   def measure(func) when is_function(func) do
     {microseconds, result} = :timer.tc(func)

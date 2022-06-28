@@ -44,7 +44,6 @@ defmodule Crawler do
           |> Floki.find("a")
           |> Floki.attribute("href")
           |> Enum.map(&URI.merge(url, &1))  # to absolute url
-          # |> Enum.map(&to_string/1)
 
           new_data = case scraper_fun.(parsed_document) do
             x when is_list(x) -> x

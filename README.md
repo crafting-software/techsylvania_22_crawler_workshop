@@ -1,21 +1,32 @@
-# Spidey
+# The Elixir Of Web Scraping - Techsylvania 2022
 
-**TODO: Add description**
+# Table of contents
+1. [Introduction](#introduction)
+2. [Scraping data](#scrape-data)
+3. [Crawling with a Stream](#crawl-with-a-stream)
+4. [Concurrency vs Parallelism](#concurrency-vs-parallelism)
 
-## Installation
+## Introduction <a name="introduction"></a>
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `spidey` to your list of dependencies in `mix.exs`:
+Two years back we had a client who wanted a quick solution for getting all the products on several online shops. Spcifically, we had to find all the products' UPCs on the specified websites.
 
-```elixir
-def deps do
-  [
-    {:spidey, "~> 0.1.0"}
-  ]
-end
-```
+## Scraping data <a name="scrape-data"></a>
+- scraping a page
+  - HTTPoison
+  - Floki
+- scraping multiple pages
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/spidey>.
+## Crawling with a Stream <a name="crawl-with-a-stream"></a>
+  - explain the algorithm
+  - Stream
+    - Eager vs Lazy
+    - Stream.resource(start, next, after)
 
+## Concurrency vs Parallelism <a name="concurrency-vs-parallelism"></a>
+  - The subtle, but important difference between Concurrency and Parallelism
+  - Measure execution time
+  - Checking available CPUs with `:observer.start()`
+  - Crawl concurrently with `Task.async_stream`
+  - Embarassingly parallel?
+
+## Conclusions <a name="conclusions"></a>
